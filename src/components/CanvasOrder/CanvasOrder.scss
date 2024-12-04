@@ -1,0 +1,48 @@
+@import "../../variables.scss";
+
+.CanvasOrder {
+    &__HeaderCanvas {
+        border-top: 1px solid #e5e5e5;
+        border-bottom: 5px solid #e5e5e5;
+
+        &__Mid {
+            &>h5 {
+                font-size: 1.2rem;
+                line-height: 1.2;
+                font-weight: 600;
+            }
+
+            &>div {
+                color: #9a9a9a;
+            }
+        }
+    }
+
+    &__BodyCanvas {
+        padding: 24px;
+
+        &__Tab {
+            font-size: 16px;
+        }
+
+        &__Content {
+
+            &>textarea {
+                width: 100%;
+                padding: 10px;
+                border-radius: .5rem;
+                border: 1px solid #e5e5e5;
+                outline: 1px solid $default-color;
+            }
+        }
+    }
+
+    &__FooterCanvas {
+        padding: 24px;
+        background-color: #fff;
+        border-top: 1px solid #e5e5e5;
+        box-shadow: 0 -2px 5px 0 rgba(0, 0, 0, 0.05);
+        bottom: 0;
+        width: 91%;
+    }
+}

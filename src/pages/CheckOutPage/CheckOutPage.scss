@@ -1,0 +1,91 @@
+@import '../../variables.scss';
+
+.CheckOut {
+    width: 60%;
+
+    &__Header {
+        background-color: #fff;
+        padding: 20px 0;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    &__Body {
+        padding: 10px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+
+        &>h5 {
+            font-size: 1.2rem;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+
+        &__Address {
+
+            &__Left {
+                width: 30%;
+            }
+
+            &__Input {
+
+                width: 70%;
+
+                &>textarea {
+                    padding: 5px;
+                    border-radius: .5rem;
+                    border: 1px solid #e5e5e5;
+                    outline: none;
+                }
+            }
+        }
+
+    }
+
+    &__Summary {
+
+        padding: 10px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+
+        &>h5 {
+            font-size: 1.2rem;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+
+        &__Item {
+            padding: 10px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+    }
+
+    &__PayDetail {
+        padding: 10px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+
+        &>h5 {
+            font-size: 1.2rem;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+
+        &__Content {
+            padding: 24px;
+
+            &__Select {
+                padding-left: 35px !important;
+            }
+        }
+    }
+
+    &__Footer {
+        padding: 20px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+
+        &>h5 {
+            font-weight: 400;
+        }
+    }
+}

@@ -1,0 +1,56 @@
+ @import "../../variables.scss";
+
+ .CartFood-Cart {
+     border: 1px solid #e5e5e5;
+     display: block;
+     border-radius: .5rem;
+
+     &__Info {
+         margin-top: 5px;
+
+         &__Title {
+             padding: 5px 8px;
+
+             &>h4 {
+                 font-size: 1rem;
+                 font-weight: 700;
+                 color: #252525;
+                 white-space: nowrap;
+                 text-overflow: ellipsis;
+                 overflow: hidden;
+                 margin-bottom: 1px;
+                 padding-top: 5px;
+             }
+
+             &>div {
+                 font-size: .8rem;
+                 color: #959595;
+                 overflow: hidden;
+                 text-overflow: ellipsis;
+                 white-space: nowrap;
+             }
+         }
+
+         &__Price {
+
+             padding: 8px 8px 5px;
+             margin: 10px 0;
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             border-top: 1px solid #e5e5e5;
+
+             &>p {
+                 font-size: 1rem;
+                 color: #ee4d2d;
+                 font-weight: 700;
+                 white-space: nowrap;
+                 text-overflow: ellipsis;
+                 overflow: hidden;
+                 text-align: end;
+                 margin: 0;
+             }
+
+         }
+     }
+ }

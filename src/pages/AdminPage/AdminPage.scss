@@ -1,0 +1,122 @@
+@import '../../variables.scss';
+
+.AdminPage {
+
+    &__Left {
+        background-color: #fff;
+        border-right: 1px solid #e5e5e5;
+        padding: 20px;
+        border-left: 1px solid #e5e5e5;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        height: 100vh;
+        position: relative;
+
+        &__List {
+
+            &__Item {
+                margin: 10px 0 !important;
+
+                :hover {
+                    background-color: #f5f5f5;
+                }
+
+                &:hover>a {
+                    color: $default-color;
+                }
+
+                &>a {
+                    width: 100%;
+                    color: #000;
+                    display: inline-block;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #e5e5e5;
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+}
+
+// ManagerRestaurant
+.ManagerRestaurant {
+    &>h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    padding: 20px 0;
+
+    &__path {
+        font-size: .8rem;
+        font-weight: 500;
+        color: #000;
+
+        &:hover a {
+            color: $default-color;
+        }
+
+        &>svg {
+            font-size: 1rem;
+        }
+    }
+
+    &__Search {
+        margin-top: 20px;
+        position: relative;
+        width: 40%;
+
+        &>input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+            outline: auto $default-color;
+        }
+
+        &>button {
+            position: absolute;
+            right: 0;
+            top: 0;
+            border: none;
+            display: flex;
+            height: 100%;
+            align-items: center;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &>svg {
+                font-size: 1.2rem;
+
+            }
+        }
+    }
+}
+
+.AddRestaurant {
+    &>h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    padding: 20px 0;
+
+    &__path {
+        font-size: .8rem;
+        font-weight: 500;
+        color: #000;
+
+        &>a {
+
+            &:hover {
+                color: $default-color;
+            }
+        }
+
+        &>svg {
+            font-size: 1rem;
+        }
+    }
+
+
+}

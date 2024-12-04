@@ -1,0 +1,139 @@
+@import '../../variables.scss';
+
+.ListRestaurant {
+    background-color: #fff;
+    padding: 24px 30px;
+
+    &__Header {
+
+        &__Btn {
+
+            &>a {
+                color: $default-hover-color;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                border: none;
+                outline: none;
+                background: none;
+                z-index: 1;
+                position: static;
+            }
+
+            :hover {
+                color: $default-color;
+            }
+
+        }
+    }
+
+    &__Content {
+        &__Cart {
+            border: 1px solid #e5e5e5;
+            display: block;
+            border-radius: .5rem;
+
+            &__Info {
+                margin-top: 5px;
+
+                &__Title {
+                    padding: 5px 8px;
+
+                    &>h4 {
+                        font-size: 1rem;
+                        font-weight: 700;
+                        color: #252525;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        margin-bottom: 1px;
+                        padding-top: 5px;
+                    }
+
+                    &>div {
+                        font-size: .8rem;
+                        color: #959595;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                }
+
+                &__Price {
+
+                    padding: 8px 8px 5px;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    border-top: 1px solid #e5e5e5;
+
+                    &>span {
+                        font-size: 1rem;
+                        color: #ee4d2d;
+                        font-weight: 700;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        text-align: end;
+                    }
+
+                    &__btn {
+
+                        text-align: end;
+                        margin: 14px 0;
+
+                        &>a {
+                            color: $default-color;
+                            font-weight: 400;
+                            font-size: 1rem;
+                            padding: 6px 10px;
+                            cursor: pointer;
+                            border: 1px solid $default-color;
+                            border-radius: .5rem;
+                            outline: none;
+                            background: none;
+                            z-index: 1;
+
+                            &:hover {
+                                background-color: $default-color;
+                                color: #fff;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.Restaurant__Arrow {
+    font-size: 16px;
+    line-height: 0;
+    position: absolute;
+    top: 50%;
+    right: -13px;
+    display: block;
+    background: rgba(0, 0, 0, .2);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: transparent;
+    border: none;
+    outline: none;
+    z-index: 2;
+
+    &>svg {
+        color: #fff;
+        font-size: 16px;
+        line-height: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+}

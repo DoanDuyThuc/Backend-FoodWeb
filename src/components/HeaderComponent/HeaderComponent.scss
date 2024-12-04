@@ -1,0 +1,173 @@
+@import "../../variables.scss";
+
+.HeaderComponent {
+    background-color: $default-color;
+
+    &__Top {
+        font-size: 0.75rem;
+        color: #fff;
+        height: 34px;
+
+        &__Right {
+            display: flex;
+            align-items: center;
+
+            &__Item {
+
+                font-size: 0.75rem;
+
+                &>a {
+                    color: #fff;
+                    text-decoration: none;
+                    padding: 0 10px;
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                    line-height: 34px;
+                    transition: background-color 0.3s;
+
+                    >svg {
+                        font-size: 20px;
+                    }
+
+                    &:hover {
+                        background-color: rgba(255, 255, 255, 0.1);
+                    }
+                }
+            }
+
+            &__separator {
+                height: 100%;
+                width: 1px;
+
+                >div {
+                    border-right: 1px solid rgba(255, 255, 255, 0.4);
+                    height: .8125rem;
+                }
+            }
+        }
+    }
+
+
+    &__Bottom {
+        background-color: #fff;
+        height: 95px;
+        display: flex;
+
+        &__Logo {
+            display: inline-block;
+            text-align: center;
+            width: 250px;
+        }
+
+        &__Search {
+            flex: 1;
+            display: flex;
+
+            &__Input {
+                height: 40px;
+                padding: 3px;
+                padding-left: 10px;
+                border: none;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
+                border-radius: 3px;
+                outline: none;
+            }
+
+            &__Btn {
+                position: absolute;
+                right: 3px;
+                top: 3px;
+                height: 34px;
+                padding: 0 15px;
+                min-width: 60px;
+            }
+        }
+
+        &__Cart {
+            width: 200px;
+
+            &>button {
+                background-color: #fff;
+                border: none;
+
+                &>svg {
+                    font-size: 25px;
+                }
+            }
+        }
+    }
+}
+
+.ControlAuthor {
+    position: relative;
+
+
+    &__List {
+        position: absolute;
+        top: 23px;
+        left: 0;
+        padding: 10px;
+        display: none;
+        background-color: #fff;
+        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        color: #000;
+        font-weight: 600;
+        font-size: .8rem;
+        border-radius: .5rem;
+
+        &__Item {
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 150px;
+
+            &>a {
+                color: #000;
+                display: inline-block;
+                padding: 8px;
+                width: 100%;
+            }
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        }
+    }
+
+    &:hover &__List {
+        display: block;
+    }
+}
+
+.CartCanvas {
+
+
+    &__Title {
+        position: relative;
+        overflow-y: auto;
+        padding: 24px;
+        display: block;
+        height: 486px;
+
+        &>h5 {
+            font-size: 1.4rem;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        &__List {
+
+            &__Item {
+                border-bottom: 1px solid #e5e5e5;
+                padding-bottom: 10px;
+            }
+        }
+    }
+
+    &__Footer {
+        padding: 24px;
+        background-color: #fff;
+    }
+}

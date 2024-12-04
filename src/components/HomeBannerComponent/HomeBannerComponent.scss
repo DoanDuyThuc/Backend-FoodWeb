@@ -1,0 +1,45 @@
+@import '../../variables.scss';
+
+.Home-Banner {
+
+    &__Left {
+        background-color: #fff;
+        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+
+        &__Menu {
+
+            &__List {
+
+
+                &__Item {
+                    padding: 0 20px !important;
+
+                    &:hover a {
+                        color: $default-hover-color;
+                    }
+
+                    >a {
+                        display: inline-block;
+                        width: 100%;
+                        font-size: 0.8rem;
+                        padding: 6px 0 !important;
+                        color: rgba(0, 0, 0, .8);
+                        border-bottom: 1px solid #e1e1e1;
+                        padding: 10px 0;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+
+    &__Right {
+
+        &__BannerRight {
+            width: 100%;
+            height: calc(50% - 5px);
+
+        }
+    }
+}

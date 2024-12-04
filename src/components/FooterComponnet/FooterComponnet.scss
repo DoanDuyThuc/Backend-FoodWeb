@@ -1,0 +1,39 @@
+.Footer {
+    min-width: 75rem;
+    border-top: 4px solid #ee4d2d;
+    background-color: #fff;
+    color: rgba(0, 0, 0, .54);
+
+    &__Item {
+
+        &__List {
+
+            &__Item {
+
+                &>h4 {
+                    font-size: .8rem;
+                    font-weight: 700;
+                    color: rgba(0, 0, 0, .54);
+                    text-transform: uppercase;
+                    margin-bottom: 1.25rem;
+                }
+
+                font-size: .75rem;
+                text-transform: capitalize;
+                margin-bottom: .75rem !important;
+
+                &>a {
+                    color: rgba(0, 0, 0, .54);
+
+                    &:hover {
+                        color: #ee4d2d;
+                    }
+                }
+
+                &>svg {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
