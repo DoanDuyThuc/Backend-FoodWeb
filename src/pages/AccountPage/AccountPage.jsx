@@ -9,6 +9,10 @@ export const AccountPage = () => {
 
     const location = useLocation();
 
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const [username, setUsername] = useState(user?.name)
+
     return (
         <div className='mt-4 AccountPage'>
             <Row>
@@ -17,7 +21,7 @@ export const AccountPage = () => {
                         <ul >
                             <li className="AccountPage__Left__Item d-flex gap-2 align-items-center mb-3">
                                 <Image width={50} height={50} src={Avartar} alt='avartar' />
-                                <span>Đoàn Thức</span>
+                                <span>{username}</span>
                             </li>
 
                             <li className="AccountPage__Left__Item">

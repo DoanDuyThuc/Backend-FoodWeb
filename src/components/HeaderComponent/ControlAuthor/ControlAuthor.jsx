@@ -1,4 +1,4 @@
-import React from 'react'
+import React , { useState }  from 'react'
 import '../HeaderComponent.scss'
 import Avartar from '../../../public/Images/avartar.jpg'
 import { FaCaretDown } from 'react-icons/fa'
@@ -8,13 +8,15 @@ export const ControlAuthor = () => {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const [username, setUsername] = useState(user?.name)
+
     return (
         <div className='ControlAuthor d-flex align-items-center gap-2 ms-4'>
             <div>
                 <img width={25} height={25} src={Avartar} alt="avartar" />
             </div>
             <div className='d-flex align-items-center gap-1'>
-                <span>Đoàn Thức</span>
+                <span>{username}</span>
                 <FaCaretDown />
             </div>
 
