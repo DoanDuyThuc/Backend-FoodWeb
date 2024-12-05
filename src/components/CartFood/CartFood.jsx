@@ -3,10 +3,12 @@ import { Button, Image } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import './CartFood.scss'
 import { CanvasOrder } from '../CanvasOrder/CanvasOrder'
+import { useDispatch } from 'react-redux'
 
-export const CartFood = () => {
+export const CartFood = ({ data }) => {
 
     const [showCanvas, setShowCanvas] = useState(false);
+    const dispatch = useDispatch();
 
     const handleCloseCanvas = () => setShowCanvas(false);
     const handleShowCanvas = () => {
@@ -15,21 +17,23 @@ export const CartFood = () => {
 
     const handleOrder = () => {
         handleShowCanvas();
+        dispatch({ type: 'restaurant/setFoodItem', payload: data });
     }
+
     return (
         <>
             <div >
                 <div className='CartFood-Cart' >
                     <div className='CartFood-Cart__Img'>
-                        <Image width={'100%'} src='https://mms.img.susercontent.com/vn-11134513-7r98o-lsv28a92wszo79@resize_ss280x175!@crop_w280_h175_cT' />
+                        <Image style={{ objectFit: 'cover' }} height={150} width={'100%'} src={data?.url} />
                     </div>
                     <div className='CartFood-Cart__Info'>
                         <div className='CartFood-Cart__Info__Title'>
-                            <h4>Cơm Tấm, Bún Thái, Hủ Tiếu Bò Kho - Tiệm Ăn Thanh Ngọc</h4>
-                            <div>271 Hùng Vương, P. Vĩnh Trung, Quận Thanh Khê, Đà Nẵng</div>
+                            <h4>{data?.foodName}</h4>
+                            <div>{data?.address}</div>
                         </div>
                         <div className='CartFood-Cart__Info__Price'>
-                            <p>100.000 vnđ</p>
+                            <p>{data?.foodPrice} vnđ</p>
                             <Button onClick={() => handleOrder()} variant="danger" >Đặt ngay</Button>
                         </div>
                     </div>

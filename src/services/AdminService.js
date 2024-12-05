@@ -20,46 +20,10 @@ export const CreateRestaurantService = async ({ token, data }) => {
     }
 }
 
-export const GetAllRestaurantService = async ({ token }) => {
-
-    try {
-        const response = await axiosInstance.get(`/api/uploadRestaurant`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            },
-            {
-                withCredentials: true,
-            });
-        return response.data;
-    } catch (error) {
-        return error.response.data;
-    }
-}
-
 export const DeleteRestaurantService = async ({ token, id }) => {
 
     try {
         const response = await axiosInstance.delete(`/api/uploadRestaurant/${id}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            },
-            {
-                withCredentials: true,
-            });
-        return response.data;
-    } catch (error) {
-        return error.response.data;
-    }
-}
-
-export const GetRestaurantIdService = async ({ token, id }) => {
-
-    try {
-        const response = await axiosInstance.get(`/api/uploadRestaurant/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -84,6 +48,79 @@ export const UpdateRestaurantService = async ({ token, data, id }) => {
                     Authorization: `Bearer ${token}`
                 }
             },
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export const UpdateFoodService = async ({ token, data, id }) => {
+
+    try {
+        const response = await axiosInstance.put(`/api/uploadFood/${id}`, data,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
+                }
+            },
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export const GetAllUserService = async ({ token }) => {
+
+    try {
+        const response = await axiosInstance.get(`/api/users`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            },
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export const DeleteUserService = async ({ token, id }) => {
+
+    try {
+        const response = await axiosInstance.delete(`/api/users/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            },
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export const UpdateStatusOrderService = async ({ orderId, OrderStatus }) => {
+
+    try {
+        const response = await axiosInstance.put(`/api/user/order/${orderId}`, { OrderStatus },
+            // {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`
+            //     }
+            // },
             {
                 withCredentials: true,
             });

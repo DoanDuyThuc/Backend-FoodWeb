@@ -1,22 +1,22 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react'
-import { Button, Form, Image, Row } from 'react-bootstrap';
-import { GoRelFilePath } from 'react-icons/go';
+import { GoRelFilePath } from 'react-icons/go'
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { GetFoodIdService } from '../../../services/RestaurantService';
 import * as formik from 'formik';
 import * as yup from 'yup';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import { UpdateRestaurantService } from '../../../services/AdminService';
+import { Button, Form, Image, Row } from 'react-bootstrap';
+import { UpdateFoodService } from '../../../services/AdminService';
 import { toast } from 'react-toastify';
 import LoadingComponent from '../../../components/LoadingComponent/LoadingComponent';
-import { GetRestaurantIdService } from '../../../services/RestaurantService';
 
-export const UpdateRestaurant = () => {
+export const UpdateFood = () => {
 
     const { id } = useParams();
+    const jwttoken = localStorage.getItem('token');
 
     const navigate = useNavigate();
 
-    const jwttoken = localStorage.getItem('token');
 
     const queryClient = useQueryClient();
 
@@ -26,18 +26,18 @@ export const UpdateRestaurant = () => {
 
     const schema = yup.object().shape({
         image: yup.string().required("Ảnh không được để trống"),
-        resTauRantName: yup.string().required("Tên cửa hàng không được để trống"),
-        address: yup.string().required("Địa chỉ không được để trống"),
-        numberphone: yup.string().required("Số điện thoại không được để trống"),
-        kindOfFood: yup.string().required("Loại món ăn không được để trống"),
+        foodName: yup.string(),
+        foodDescription: yup.string(),
+        foodPrice: yup.string(),
     });
+
 
     //query
     const { data } = useQuery({
-        queryKey: ['GetRestaurantId', { id: id }],
+        queryKey: ['GetFoodId', { id: id }],
         queryFn: async ({ queryKey }) => {
             const [, { id }] = queryKey;
-            const res = await GetRestaurantIdService({ id });
+            const res = await GetFoodIdService({ id });
             return res;
         },
         enabled: !!id,
@@ -47,17 +47,17 @@ export const UpdateRestaurant = () => {
 
     //mutation
     const mutationUpdateRestaurant = useMutation({
-        mutationFn: UpdateRestaurantService,
+        mutationFn: UpdateFoodService,
         onMutate: async (Data) => {
-            await queryClient.cancelQueries('GetRestaurantId');
-            const previousValue = queryClient.getQueryData('GetRestaurantId');
-            queryClient.setQueryData('GetRestaurantId', (old) => {
+            await queryClient.cancelQueries('GetFoodId');
+            const previousValue = queryClient.getQueryData('GetFoodId');
+            queryClient.setQueryData('GetFoodId', (old) => {
                 return old;
             });
             return previousValue;
         },
-        onSuccess: (data) => {
-            navigate('/admin');
+        onSuccess: (Data) => {
+            navigate(`/admin/detailRestaurant/${data?.restaurantId}`);
             toast.success(`🐉 Update thành công`, {
                 position: "top-right",
                 autoClose: 5000,
@@ -70,7 +70,7 @@ export const UpdateRestaurant = () => {
             });
         },
         onSettled: () => {
-            queryClient.invalidateQueries('GetRestaurantId');
+            queryClient.invalidateQueries('GetFoodId');
         },
         onError: (error) => {
             toast.error(`🐉 Update thất bại`, {
@@ -95,19 +95,21 @@ export const UpdateRestaurant = () => {
         }
     };
 
-    if (mutationUpdateRestaurant.isPending) return <LoadingComponent message="Đang Update dữ liệu, vui lòng chờ..." />;
+    if (mutationUpdateRestaurant.isPending) return <LoadingComponent message='đang upload dữ liệu ...' />
 
     return (
-        <div className='AddRestaurant'>
-            <span className='AddRestaurant__path d-flex align-items-center' >
+        <div className='UpdateFood'>
+            <span className='UpdateFood__path d-flex align-items-center' >
                 <GoRelFilePath />
                 <NavLink to='/admin'>quản lý cửa hàng</NavLink>
                 <GoRelFilePath />
-                <NavLink to={`/admin/updateRestaurant/${id}`}>update nhà hàng</NavLink>
+                <NavLink to={`/admin/detailRestaurant/${data?.restaurantId}`}>bánh canh cua</NavLink>
+                <GoRelFilePath />
+                <NavLink to={`/admin/updateRestaurant/${id}`}>update Food</NavLink>
             </span>
-            <h1 className='mt-1'>Update nhà hàng</h1>
+            <h1 className='mt-1'>Update Food</h1>
 
-            <div className='AddRestaurant__Form mt-4'>
+            <div className='UpdateFood__Form mt-4'>
                 <Formik
                     enableReinitialize={true}
                     validationSchema={schema}
@@ -121,22 +123,21 @@ export const UpdateRestaurant = () => {
                             } else {
                                 formData.append('image', null);
                             }
-                            formData.append('resTauRantName', values.resTauRantName);
-                            formData.append('address', values.address);
-                            formData.append('numberphone', values.numberphone);
-                            formData.append('kindOfFood', values.kindOfFood);
+
+                            formData.append('foodName', values.foodName);
+                            formData.append('foodDescription', values.foodDescription);
+                            formData.append('foodPrice', values.foodPrice);
+                            formData.append('restaurantId', data?.restaurantId);
 
                             await mutationUpdateRestaurant.mutateAsync({ token: jwttoken, data: formData, id: id });
-
 
                         }
                     }
                     initialValues={{
                         image: data?.url || '',
-                        resTauRantName: data?.resTauRantName || '',
-                        address: data?.address || '',
-                        numberphone: data?.numberphone || '',
-                        kindOfFood: data?.kindOfFood || '',
+                        foodName: data?.foodName || '',
+                        foodDescription: data?.foodDescription || '',
+                        foodPrice: data?.foodPrice || '',
                     }}
                 >
                     {({ handleSubmit, handleChange, setFieldValue, values, touched, errors }) => (
@@ -170,14 +171,14 @@ export const UpdateRestaurant = () => {
                                 <Form.Group controlId="validationFormik01">
                                     <Form.Control
                                         type="text"
-                                        name="resTauRantName"
-                                        value={values.resTauRantName}
-                                        placeholder='Nhập tên nhà hàng'
+                                        name="foodName"
+                                        value={values.foodName}
+                                        placeholder='Nhập tên món ăn'
                                         onChange={handleChange}
-                                        isInvalid={!!errors.resTauRantName}
+                                        isInvalid={!!errors.foodName}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.resTauRantName}
+                                        {errors.foodName}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
@@ -185,15 +186,16 @@ export const UpdateRestaurant = () => {
                             <Row className="mb-3">
                                 <Form.Group controlId="validationFormik01">
                                     <Form.Control
-                                        type="address"
-                                        name="address"
-                                        value={values.address}
-                                        placeholder='Nhập địa chỉ nhà hàng'
+                                        type="text"
+                                        name="foodDescription"
+                                        as="textarea"
+                                        value={values.foodDescription}
+                                        placeholder='Nhập mô tả món ăn'
                                         onChange={handleChange}
-                                        isInvalid={!!errors.address}
+                                        isInvalid={!!errors.foodDescription}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.address}
+                                        {errors.foodDescription}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
@@ -201,37 +203,22 @@ export const UpdateRestaurant = () => {
                             <Row className="mb-3">
                                 <Form.Group controlId="validationFormik01">
                                     <Form.Control
-                                        type="numberphone"
-                                        name="numberphone"
-                                        value={values.numberphone}
-                                        placeholder='Nhập số điện thoại nhà hàng'
+                                        type="foodPrice"
+                                        name="foodPrice"
+                                        value={values.foodPrice}
+                                        placeholder='Nhập giá món ăn'
                                         onChange={handleChange}
-                                        isInvalid={!!errors.numberphone}
+                                        isInvalid={!!errors.foodPrice}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.numberphone}
+                                        {errors.foodPrice}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
 
-                            <Row className="mb-3">
-                                <Form.Group controlId="validationFormik01">
-                                    <Form.Control
-                                        type="kindOfFood"
-                                        name="kindOfFood"
-                                        value={values.kindOfFood}
-                                        placeholder='Nhà hàng này phục vụ loại món ăn gì - hải sản , thức ăn nhanh ...'
-                                        onChange={handleChange}
-                                        isInvalid={!!errors.kindOfFood}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.kindOfFood}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Row>
                             <Row className="mb-3 text-end">
                                 <Form.Group controlId="validationFormik01" >
-                                    <Button type='submit' variant="success">Update Nhà Hàng</Button>
+                                    <Button type='submit' variant="success">Update món ăn</Button>
                                 </Form.Group>
                             </Row>
                         </Form>

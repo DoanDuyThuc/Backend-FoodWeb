@@ -118,7 +118,6 @@ export const AddRestaurant = () => {
 
                             <Row className="mb-3">
                                 <Form.Group >
-                                    <Form.Label>Chọn Hình Ảnh</Form.Label>
                                     <Form.Control
                                         type="file"
                                         accept="image/*"

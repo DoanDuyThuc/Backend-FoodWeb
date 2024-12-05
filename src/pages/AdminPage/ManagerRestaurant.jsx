@@ -3,9 +3,8 @@ import React, { useEffect } from 'react'
 import { Button, Image, Table } from 'react-bootstrap'
 import { GoRelFilePath } from 'react-icons/go'
 import { IoIosAdd, IoIosSearch } from 'react-icons/io'
-import { DeleteRestaurantService, GetAllRestaurantService } from '../../services/AdminService'
+import { DeleteRestaurantService } from '../../services/AdminService'
 import { useDispatch, useSelector } from 'react-redux'
-import { setListRestaurants } from '../../redux/ProductsSlice/ProductsSlice'
 import { FaEye } from 'react-icons/fa'
 import { MdAutoFixHigh, MdDelete } from 'react-icons/md'
 import { toast } from 'react-toastify'
@@ -17,11 +16,9 @@ export const ManagerRestaurant = () => {
     const jwttoken = localStorage.getItem('token');
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
-    const restaurants = useSelector(state => state.products.restaurants)
+    const restaurants = useSelector(state => state.restaurant.restaurants)
 
     const queryClient = useQueryClient();
-
 
     //mutation
     const mutationDeleteRestaurant = useMutation({
@@ -64,24 +61,6 @@ export const ManagerRestaurant = () => {
         },
     });
 
-    // query 
-    const { data } = useQuery({
-        queryKey: ['GetAllRestaurant', { token: jwttoken }],
-        queryFn: async ({ queryKey }) => {
-            const [, { token }] = queryKey;
-            const res = await GetAllRestaurantService({ token });
-            return res;
-        },
-        keepPreviousData: true,
-        refetchOnWindowFocus: false,
-    })
-
-    useEffect(() => {
-        if (data) {
-            dispatch(setListRestaurants(data))
-        }
-    }, [data, dispatch])
-
     //handle
     const handleDeleteRestaurant = async (id) => {
         const isConfirmed = window.confirm("Bạn có chắc muốn xóa tất cả user đã chọn không?");
@@ -108,7 +87,7 @@ export const ManagerRestaurant = () => {
             </div>
 
             <div className='mt-4'>
-                <Table variant="dark" bordered hover size="sm">
+                <Table variant="dark" bordered hover size="lg">
                     <thead>
                         <tr>
                             <th className='text-center'>#</th>
@@ -128,7 +107,7 @@ export const ManagerRestaurant = () => {
                                 </td>
                                 <td className='text-center align-middle' >{restaurant.numberphone}</td>
                                 <td className='text-center align-middle' >
-                                    <Button variant='outline-success' size='sm'><FaEye /></Button>
+                                    <Button onClick={() => navigate(`/admin/detailRestaurant/${restaurant.id}`)} variant='outline-success' size='sm'><FaEye /></Button>
                                     <Button onClick={() => navigate(`/admin/updateRestaurant/${restaurant.id}`)} className='mx-2' variant='outline-primary' size='sm'><MdAutoFixHigh /></Button>
                                     <Button onClick={() => handleDeleteRestaurant(restaurant.id)} variant='outline-danger' size='sm'><MdDelete /></Button>
                                 </td>

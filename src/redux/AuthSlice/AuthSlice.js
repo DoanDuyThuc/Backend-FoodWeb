@@ -1,7 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    token: '',
+    role: 'USER',
+    id: '',
+    cartId: '',
+    orders: [],
 }
 
 export const authSlice = createSlice({
@@ -9,11 +12,21 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         setUserInfo: (state, action) => {
-            state.token = action.payload;
+            state.role = action.payload.role;
+            state.id = action.payload.id;
+            state.cartId = action.payload.cartId;
+        },
+        removeUserInfo: (state) => {
+            state.role = '';
+            state.id = '';
+            state.cartId = '';
+        },
+        setOrdersUser: (state, action) => {
+            state.orders = action.payload;
         }
     },
 })
 
-export const { setUserInfo } = authSlice.actions
+export const { setUserInfo, removeUserInfo, setOrdersUser } = authSlice.actions
 
 export default authSlice.reducer

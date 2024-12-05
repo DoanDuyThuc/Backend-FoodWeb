@@ -41,10 +41,23 @@ export const LoginPage = () => {
             } else if (data.statusCode === 200) {
                 localStorage.setItem('token', data?.token);
                 localStorage.setItem('user', JSON.stringify({
+                    email: data?.email,
                     name: data?.name,
                     numberphone: data?.numberphone,
                     role: data?.role,
+                    cartId: data?.cartId,
+                    id: data?.id,
                 }));
+
+                dispatch({
+                    type: 'auth/setUserInfo', payload:
+                    {
+                        role: data?.role,
+                        id: data?.id,
+                        cartId: data?.cartId
+                    }
+                });
+
                 navigate('/');
                 toast.success(`🐉 ${data?.message}`, {
                     position: "top-right",

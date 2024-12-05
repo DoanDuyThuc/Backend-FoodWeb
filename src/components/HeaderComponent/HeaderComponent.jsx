@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './HeaderComponent.scss'
 import { Col, Container, Row, Image, InputGroup, Button, Badge, Offcanvas } from 'react-bootstrap'
 import { FaPhoneAlt, FaSearch, FaShoppingCart } from 'react-icons/fa'
@@ -7,20 +7,145 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import Logo from '../../public/Images/logo.jpeg'
 import { ControlAuthor } from './ControlAuthor/ControlAuthor'
 import { IoMdAdd, IoMdRemove } from 'react-icons/io'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { DeleteCartItemService, GetCartIdService, UpdateQualityCartItemService } from '../../services/CartService'
+import { toast } from 'react-toastify'
 
 export const HeaderComponent = () => {
 
     const user = JSON.parse(localStorage.getItem('user'));
+    const currentCartId = useSelector(state => state.auth.cartId);
+
+    const carts = useSelector(state => state.cart.carts);
+    const totalPriceCart = useSelector(state => state.cart.totalPriceCart);
+
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
+
+    const queryClient = useQueryClient();
 
     const [showCanvas, setShowCanvas] = useState(false);
     const handleCloseCanvas = () => setShowCanvas(false);
     const handleShowCanvas = () => setShowCanvas(true);
 
-    const handleOpenCheckout = () => {
+    //query
+    const { data } = useQuery({
+        queryKey: ['GetCartId', { cartId: user?.cartId || currentCartId }],
+        queryFn: async ({ queryKey }) => {
+            const [, { cartId }] = queryKey;
+            const res = await GetCartIdService({ cartId });
+            return res;
+        },
+        enabled: !!user?.cartId,
+        keepPreviousData: true,
+        refetchOnWindowFocus: false,
+    })
+
+    //mutation
+    const mutationUpdateQualityFoodToCart = useMutation({
+        mutationFn: UpdateQualityCartItemService,
+        onMutate: async (Data) => {
+            await queryClient.cancelQueries('GetCartId');
+            const previousValue = queryClient.getQueryData('GetCartId');
+            queryClient.setQueryData('GetCartId', (old) => {
+                return old;
+            });
+            return previousValue;
+        },
+        onSuccess: (data) => {
+
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries('GetCartId');
+        },
+        onError: (error) => {
+            toast.error(`🐉 update thất bại`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        },
+    });
+
+    const mutationDeleteCartItem = useMutation({
+        mutationFn: DeleteCartItemService,
+        onMutate: async (Data) => {
+            await queryClient.cancelQueries('GetCartId');
+            const previousValue = queryClient.getQueryData('GetCartId');
+            queryClient.setQueryData('GetCartId', (old) => {
+                return old;
+            });
+            return previousValue;
+        },
+        onSuccess: (data) => {
+            toast.success(`🐉 đã xóa món ăn`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries('GetCartId');
+        },
+        onError: (error) => {
+            toast.error(`🐉 delete thất bại`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        },
+    });
+
+    useEffect(() => {
+        if (data) {
+            dispatch({ type: 'cart/setCards', payload: data.cartItemRequests });
+        }
+    }, [data, dispatch])
+
+
+    const handleOpenCheckout = async () => {
+        setShowCanvas(false)
         navigate('/checkout');
-        handleCloseCanvas();
+    }
+
+    const handleAddQualityCart = async (item) => {
+        await mutationUpdateQualityFoodToCart.mutateAsync(
+            {
+                quantity: item.quantity + 1,
+                cartItemId: item.cartItemId
+            });
+    }
+
+    const handleRemoveQualityCart = async (item) => {
+        if (item.quantity === 1) {
+            await mutationDeleteCartItem.mutateAsync(
+                {
+                    cartItemId: item.cartItemId
+                });
+            return
+        }
+        await mutationUpdateQualityFoodToCart.mutateAsync(
+            {
+                quantity: item.quantity - 1,
+                cartItemId: item.cartItemId
+            });
     }
 
     return (
@@ -91,7 +216,7 @@ export const HeaderComponent = () => {
                             <button onClick={() => handleShowCanvas()} type="button" className="position-relative">
                                 <FaShoppingCart />
                                 <span style={{ height: '20px', width: '20px' }} className="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-danger ">
-                                    2
+                                    {carts.length}
                                 </span>
                             </button>
                         </div>
@@ -99,196 +224,57 @@ export const HeaderComponent = () => {
                 </div>
             </div>
 
-            <Offcanvas style={{ width: 500 }} show={showCanvas} onHide={handleCloseCanvas} placement='end'>
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title style={{ borderBottom: '1px solid #e5e5e5' }} className='w-100 text-center pb-2'>
-                        <h5>Giỏ đồ ăn</h5>
-                    </Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body className=''>
-                    <div className='CartCanvas'>
-                        <div className='CartCanvas__Title pt-0' >
-                            <h5>Cafe & Bánh Mỳ Vân Trinh</h5>
-                            <div className='CartCanvas__Title__List' >
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='CartCanvas__Title__List__Item'>
-                                    <Row>
-                                        <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600' }} >1</div>
-                                            <span style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
-                                        </Col>
-                                        <Col lg={2}>
-                                            <Image width={48} height={48} src='https://food-cms.grab.com/compressed_webp/items/VNITE2024091116210344962/photo/menueditor_item_c63c92be654d49f38eb8870e77f1527a_1726071654525656429.webp' />
-                                        </Col>
-                                        <Col className='d-flex align-items-center justify-content-between' lg={8}>
-                                            <div style={{ fontWeight: '500' }}>Nước ép cà chua</div>
-                                            <span>20.000 vnđ</span>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </div>
-                        </div>
+            {showCanvas && (
+                <Offcanvas style={{ width: 500 }} show={showCanvas} onHide={handleCloseCanvas} placement='end'>
+                    <Offcanvas.Header closeButton>
+                        <Offcanvas.Title style={{ borderBottom: '1px solid #e5e5e5' }} className='w-100 text-center pb-2'>
+                            <h5>Giỏ đồ ăn</h5>
+                        </Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body className=''>
+                        <div className='CartCanvas'>
+                            <div className='CartCanvas__Title pt-0' >
+                                <div className='CartCanvas__Title__List' >
+                                    {carts.map((item, index) => (
+                                        <div key={index} className='CartCanvas__Title__List__Item'>
+                                            <Row>
+                                                <Col className='d-flex align-items-center justify-content-around p-0' lg={2}>
+                                                    <span onClick={() => handleRemoveQualityCart(item)} style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdRemove /></span>
+                                                    <div style={{ fontSize: '1rem', fontWeight: '600' }} >{item.quantity}</div>
+                                                    <span onClick={() => handleAddQualityCart(item)} style={{ cursor: 'pointer', fontSize: '1rem', color: '#28a745' }} ><IoMdAdd /></span>
+                                                </Col>
+                                                <Col lg={2}>
+                                                    <Image style={{ objectFit: 'cover' }} width={48} height={48} src={item.url} />
+                                                </Col>
+                                                <Col className='d-flex align-items-center justify-content-between' lg={8}>
+                                                    <div style={{ fontWeight: '500' }}>{item.foodName}</div>
+                                                    <span>{item.foodPrice * item.quantity} vnđ</span>
+                                                </Col>
+                                            </Row>
+                                        </div>
 
-                        <div className='CartCanvas__Footer'>
-                            <Row className='mb-4'>
-                                <Col style={{ fontSize: '1.2rem' }} lg={4}>
-                                    Tổng cộng
-                                </Col>
-                                <Col style={{ fontWeight: '600', fontSize: '1.2rem' }} className='text-end' lg={8}>
-                                    40.000 ₫
-                                </Col>
-                            </Row>
-                            <div className='CartCanvas__Footer__Btn'>
-                                <Button onClick={() => handleOpenCheckout()} className='w-100' variant="success">Xem lại đơn hàng</Button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className='CartCanvas__Footer'>
+                                <Row className='mb-4'>
+                                    <Col style={{ fontSize: '1.2rem' }} lg={4}>
+                                        Tổng cộng
+                                    </Col>
+                                    <Col style={{ fontWeight: '600', fontSize: '1.2rem' }} className='text-end' lg={8}>
+                                        {totalPriceCart} ₫
+                                    </Col>
+                                </Row>
+                                <div className='CartCanvas__Footer__Btn'>
+                                    <Button disabled={carts.length === 0} onClick={() => handleOpenCheckout()} className='w-100' variant="success">Xem lại đơn hàng</Button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </Offcanvas.Body>
-            </Offcanvas>
+                    </Offcanvas.Body>
+                </Offcanvas>
+            )}
+
         </>
     )
 }

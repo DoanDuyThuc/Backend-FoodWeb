@@ -120,3 +120,196 @@
 
 
 }
+
+.ManagerFood {
+    &>h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    padding: 20px 0;
+
+    &__path {
+        font-size: .8rem;
+        font-weight: 500;
+        color: #000;
+
+        &>a {
+            &:hover {
+                color: $default-color;
+            }
+        }
+
+        &>svg {
+            font-size: 1rem;
+        }
+    }
+
+    &__Search {
+        margin-top: 20px;
+        position: relative;
+        width: 40%;
+
+        &>input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+            outline: auto $default-color;
+        }
+
+        &>button {
+            position: absolute;
+            right: 0;
+            top: 0;
+            border: none;
+            display: flex;
+            height: 100%;
+            align-items: center;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &>svg {
+                font-size: 1.2rem;
+
+            }
+        }
+    }
+
+    &__AddBtn {
+
+        &>button {
+            padding: 20px 26px;
+            border: none;
+            background-color: $default-color;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+    }
+}
+
+.UpdateFood {
+    &>h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    padding: 20px 0;
+
+    &__path {
+        font-size: .8rem;
+        font-weight: 500;
+        color: #000;
+
+        &>a {
+            &:hover {
+                color: $default-color;
+            }
+        }
+
+        &>svg {
+            font-size: 1rem;
+        }
+    }
+}
+
+.ManagerUser {
+    &>h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    padding: 20px 0;
+
+    &__path {
+        font-size: .8rem;
+        font-weight: 500;
+        color: #000;
+
+        &:hover a {
+            color: $default-color;
+        }
+
+        &>svg {
+            font-size: 1rem;
+        }
+    }
+
+    &__Search {
+        margin-top: 20px;
+        position: relative;
+        width: 40%;
+
+        &>input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+            outline: auto $default-color;
+        }
+
+        &>button {
+            position: absolute;
+            right: 0;
+            top: 0;
+            border: none;
+            display: flex;
+            height: 100%;
+            align-items: center;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &>svg {
+                font-size: 1.2rem;
+
+            }
+        }
+    }
+}
+
+// order
+.ManagerOrder {
+    &>h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    padding: 20px 0;
+
+    &__path {
+        font-size: .8rem;
+        font-weight: 500;
+        color: #000;
+
+        &:hover a {
+            color: $default-color;
+        }
+
+        &>svg {
+            font-size: 1rem;
+        }
+    }
+
+    &__statusSelect {
+        width: 70% !important;
+        outline: none !important;
+        border: none !important;
+        background-image: none !important;
+        padding: 4px 10px !important;
+        text-align: center;
+        color: #fff !important;
+
+        &>option {
+            color: #000 !important;
+            background-color: #fff !important;
+        }
+    }
+}
+
+// modal
+.FoodModal {
+    padding: 25px 20px;
+}

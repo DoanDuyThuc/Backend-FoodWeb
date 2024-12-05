@@ -6,8 +6,11 @@ import { NavLink } from 'react-router-dom'
 import { CartRestaurant } from '../CartRestaurant/CartRestaurant'
 import Slider from 'react-slick'
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
+import { useSelector } from 'react-redux'
 
 export const ListRestaurantComponent = () => {
+
+    const restaurants = useSelector(state => state.restaurant.restaurants)
 
     var settings = {
         dots: true,
@@ -59,12 +62,11 @@ export const ListRestaurantComponent = () => {
             <div className='ListRestaurant__Content'>
                 <div className="slider-container">
                     <Slider {...settings}>
-                        <CartRestaurant />
-                        <CartRestaurant />
-                        <CartRestaurant />
-                        <CartRestaurant />
-                        <CartRestaurant />
-                        <CartRestaurant />
+                        {restaurants.map((restaurant, index) => (
+                            <div key={restaurant.id}>
+                                <CartRestaurant data={restaurant} />
+                            </div>
+                        ))}
                     </Slider>
                 </div>
 

@@ -6,14 +6,36 @@ import { FaSearch } from 'react-icons/fa'
 import { IoMdAdd, IoMdRemove } from 'react-icons/io'
 import Logo from '../../public/Images/logo.jpeg'
 import { CanvasOrder } from '../../components/CanvasOrder/CanvasOrder'
+import { useParams } from 'react-router-dom'
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { GetRestaurantIdService } from '../../services/RestaurantService';
+import { useDispatch } from 'react-redux'
 
 export const DetailsRestaurantPage = () => {
+
+    const { id } = useParams();
+
+    const dispatch = useDispatch();
+
+    //query
+    const { data } = useQuery({
+        queryKey: ['GetRestaurantId', { id: id }],
+        queryFn: async ({ queryKey }) => {
+            const [, { id }] = queryKey;
+            const res = await GetRestaurantIdService({ id });
+            return res;
+        },
+        enabled: !!id,
+        keepPreviousData: true,
+        refetchOnWindowFocus: false,
+    })
 
     const [showCanvas, setShowCanvas] = useState(false);
 
     const handleCloseCanvas = () => setShowCanvas(false);
-    const handleShowCanvas = () => {
+    const handleShowCanvas = (food) => {
         setShowCanvas(true);
+        dispatch({ type: 'restaurant/setFoodItem', payload: food });
     }
 
     return (
@@ -23,13 +45,13 @@ export const DetailsRestaurantPage = () => {
                     <Row>
                         <Col lg={5}>
                             <div className='DetailsRestaurant__Header__Left'>
-                                <Image src='https://down-bs-vn.img.susercontent.com/vn-11134513-7r98o-lsttvkvjwkw44a@resize_ss640x400!@crop_w640_h400_cT' alt='imge' />
+                                <Image src={data?.url} />
                             </div>
                         </Col>
                         <Col lg={7}>
                             <div className='DetailsRestaurant__Header__Right'>
-                                <h1>Tứ Hải Quán - Cơm Gà & Cơm Sườn</h1>
-                                <div className='DetailsRestaurant__Header__Right__Title'>23 Xô Viết Nghệ Tĩnh, P. Hòa Cường Nam, Quận Hải Châu, Đà Nẵng</div>
+                                <h1>{data?.resTauRantName}</h1>
+                                <div className='DetailsRestaurant__Header__Right__Title'>{data?.address}</div>
                                 <div className='DetailsRestaurant__Header__Right__Content'>
                                     <div className='DetailsRestaurant__Header__Right__Content__Time'>
                                         <span>
@@ -44,7 +66,7 @@ export const DetailsRestaurantPage = () => {
                                     <div className='DetailsRestaurant__Header__Right__Content__Intro'>
                                         <span>Giới thiệu : </span>
                                         <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique, tortor
+                                            {data?.kindOfFood}
                                         </p>
                                     </div>
                                 </div>
@@ -96,38 +118,42 @@ export const DetailsRestaurantPage = () => {
                             </div>
                         </Col>
                         <Col lg={7}>
-                            <div className='DetailsRestaurant__Body__Content__Item'>
-                                <Row>
-                                    <Col lg={2}>
-                                        <div className='DetailsRestaurant__Body__Content__Item__Image'>
-                                            <Image width={60} height={60} src='https://down-bs-vn.img.susercontent.com/vn-11134517-7r98o-lw8i2mb2ktzt35' />
-                                        </div>
-                                    </Col>
-                                    <Col lg={7}>
-                                        <div className='DetailsRestaurant__Body__Content__Item__Info'>
-                                            <h2>Combo 3: Cơm Má Đùi + Coca</h2>
-                                            <div>1 phần Cơm Má Đùi + 1 chai Coca</div>
-                                            <span>best seller</span>
-                                        </div>
-                                    </Col>
-                                    <Col lg={3}>
-                                        <Row className='align-items-center'>
-                                            <Col lg={8}>
-                                                <div className='DetailsRestaurant__Body__Content__Item__Price'>
-                                                    <span>50.000đ</span>
-                                                </div>
-                                            </Col>
-                                            <Col lg={4}>
-                                                <div className='DetailsRestaurant__Body__Content__Item__Button'>
-                                                    <Button onClick={handleShowCanvas} variant="outline-danger">
-                                                        <IoMdAdd />
-                                                    </Button>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </Col>
-                                </Row>
-                            </div>
+                            {data?.foodRequests && data?.foodRequests.map((food, index) => (
+                                <div key={index} className='DetailsRestaurant__Body__Content__Item'>
+                                    <Row>
+                                        <Col lg={2}>
+                                            <div className='DetailsRestaurant__Body__Content__Item__Image'>
+                                                <Image width={60} height={60} src={food?.url} />
+                                            </div>
+                                        </Col>
+                                        <Col lg={7}>
+                                            <div className='DetailsRestaurant__Body__Content__Item__Info'>
+                                                <h2>{food?.foodName}</h2>
+                                                <div>{food?.foodDescription}</div>
+                                                <span>{food?.kindOfFood}</span>
+                                            </div>
+                                        </Col>
+                                        <Col lg={3}>
+                                            <Row className='align-items-center'>
+                                                <Col lg={8}>
+                                                    <div className='DetailsRestaurant__Body__Content__Item__Price'>
+                                                        <span>{food?.foodPrice}đ</span>
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className='DetailsRestaurant__Body__Content__Item__Button'>
+                                                        <Button onClick={() => handleShowCanvas(food)} variant="outline-danger">
+                                                            <IoMdAdd />
+                                                        </Button>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            ))
+                            }
+
 
                         </Col>
                     </Row>

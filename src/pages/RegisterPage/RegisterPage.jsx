@@ -9,6 +9,7 @@ import * as yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
 import { RegisterService } from '../../services/authService'
 import { toast } from 'react-toastify';
+import { CreateCartService } from '../../services/CartService'
 
 export const RegisterPage = () => {
 
@@ -23,13 +24,38 @@ export const RegisterPage = () => {
     });
 
     //mutation login
+
+    const mutationCreateCart = useMutation({
+        mutationFn: CreateCartService,
+        onSuccess: (data) => {
+            console.log('tạo thành công cart');
+
+        },
+        onError: (error) => {
+            toast.error(`🐉 ${'lỗi tạo cart: ' + error}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        },
+    });
+
     const mutationRegister = useMutation({
         mutationFn: RegisterService,
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
+
+            await mutationCreateCart.mutateAsync({
+                userId: data?.ourUsers?.id
+            });
+
         },
         onSettled: (data, error) => {
             navigate('/login');
-
             toast.success(`🐉 ${data?.message}`, {
                 position: "top-right",
                 autoClose: 5000,

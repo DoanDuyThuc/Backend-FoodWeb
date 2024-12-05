@@ -14,10 +14,18 @@ import { DefaultAdmin } from '../pages/AdminPage/DefaultAdmin'
 import { ManagerRestaurant } from '../pages/AdminPage/ManagerRestaurant'
 import { AddRestaurant } from '../pages/AdminPage/Action/AddRestaurant'
 import { UpdateRestaurant } from '../pages/AdminPage/Action/UpdateRestaurant'
+import { ManagerFood } from '../pages/AdminPage/ManagerFood'
+import { UpdateFood } from '../pages/AdminPage/Action/UpdateFood'
+import { ManagerUser } from '../pages/AdminPage/ManagerUser'
+import { useSelector } from 'react-redux'
+import { AccountOrder } from '../pages/AccountPage/AccountOrder'
+import { ManagerOrder } from '../pages/AdminPage/ManagerOrder'
 
 const Routers = () => {
 
     const user = JSON.parse(localStorage.getItem('user'));
+
+    const currentRole = useSelector(state => state.auth.role);
 
     return (
         <Routes>
@@ -37,7 +45,7 @@ const Routers = () => {
                 {/* Profile */}
                 <Route path="account" element={<AccountPage />}>
                     <Route index element={<AccountInfo />} />
-                    <Route path="order" element={<div>order</div>} />
+                    <Route path="order" element={<AccountOrder />} />
                 </Route>
 
                 {/* details restaurant */}
@@ -45,11 +53,15 @@ const Routers = () => {
             </Route>
 
             {/* manager admin */}
-            {user?.role === 'ADMIN' && (
+            {(user?.role || currentRole) === 'ADMIN' && (
                 <Route path="admin" element={<DefaultAdmin />} >
                     <Route index element={<ManagerRestaurant />} />
                     <Route path="addRestaurant" element={<AddRestaurant />} />
                     <Route path="updateRestaurant/:id" element={<UpdateRestaurant />} />
+                    <Route path="detailRestaurant/:id" element={<ManagerFood />} />
+                    <Route path="updateFood/:id" element={<UpdateFood />} />
+                    <Route path="managerUser" element={<ManagerUser />} />
+                    <Route path="managerOrder" element={<ManagerOrder />} />
                 </Route>
             )}
 

@@ -45,3 +45,22 @@ export const GetMeService = async ({ token }) => {
         return error.response.data;
     }
 }
+
+
+export const GetOrderUserService = async ({ userId }) => {
+
+    try {
+        const response = await axiosInstance.get(`/api/user/order/useroder/${userId}`, {},
+            // {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`
+            //     }
+            // },
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}

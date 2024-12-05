@@ -5,6 +5,8 @@ import Logo from '../../public/Images/logo.jpeg'
 import './AdminPage.scss'
 import { MdAddBusiness, MdOutlineRestaurantMenu } from 'react-icons/md'
 import { CiLogout } from 'react-icons/ci'
+import { FaUserCog } from 'react-icons/fa'
+import { VscListUnordered } from 'react-icons/vsc'
 
 export const DefaultAdmin = () => {
 
@@ -47,6 +49,30 @@ export const DefaultAdmin = () => {
                                             to='/admin/addRestaurant'>
                                             <MdAddBusiness style={{ fontSize: '1.5rem' }} className='me-2' />
                                             Thêm cửa hàng mới
+                                        </NavLink>
+                                    </li>
+
+                                    <li className='AdminPage__Left__List__Item'>
+                                        <NavLink
+                                            style={{
+                                                color: location.pathname === '/admin/managerUser' ?
+                                                    '#28a745' : '#000'
+                                            }}
+                                            to='/admin/managerUser'>
+                                            <FaUserCog style={{ fontSize: '1.5rem' }} className='me-2' />
+                                            Quản lý người dùng
+                                        </NavLink>
+                                    </li>
+
+                                    <li className='AdminPage__Left__List__Item'>
+                                        <NavLink
+                                            style={{
+                                                color: location.pathname === '/admin/managerOrder' ?
+                                                    '#28a745' : '#000'
+                                            }}
+                                            to='/admin/managerOrder'>
+                                            <VscListUnordered style={{ fontSize: '1.5rem' }} className='me-2' />
+                                            Quản lý đơn hàng
                                         </NavLink>
                                     </li>
 
