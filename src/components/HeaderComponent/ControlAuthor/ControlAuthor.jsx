@@ -1,4 +1,4 @@
-import React , { useState }  from 'react'
+import React, { useState } from 'react'
 import '../HeaderComponent.scss'
 import Avartar from '../../../public/Images/avartar.jpg'
 import { FaCaretDown } from 'react-icons/fa'
@@ -28,11 +28,8 @@ export const ControlAuthor = () => {
                 <img width={25} height={25} src={Avartar} alt="avartar" />
             </div>
             <div className='d-flex align-items-center gap-1'>
-<<<<<<< HEAD
                 <span>{user.name}</span>
-=======
                 <span>{username}</span>
->>>>>>> 39554f055757d0a9e1bc91b0336851b3de55224a
                 <FaCaretDown />
             </div>
 

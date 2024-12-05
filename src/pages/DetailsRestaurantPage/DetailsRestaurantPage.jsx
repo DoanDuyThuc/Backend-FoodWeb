@@ -123,7 +123,7 @@ export const DetailsRestaurantPage = () => {
                                     <Row>
                                         <Col lg={2}>
                                             <div className='DetailsRestaurant__Body__Content__Item__Image'>
-                                                <Image width={60} height={60} src={food?.url} />
+                                                <Image style={{ objectFit: 'cover' }} width={60} height={60} src={food?.url} />
                                             </div>
                                         </Col>
                                         <Col lg={7}>

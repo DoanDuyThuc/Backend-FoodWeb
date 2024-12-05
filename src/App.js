@@ -45,7 +45,7 @@ function App() {
       const res = await GetOrderUserService({ userId });
       return res;
     },
-    enabled: !!user.id,
+    enabled: !!user?.id,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   })
