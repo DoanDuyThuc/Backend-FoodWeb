@@ -118,7 +118,7 @@ export const UpdateRestaurant = () => {
                             if (values.image instanceof File) {
                                 formData.append('image', values.image);
                             } else {
-                                formData.append('image', values.image);
+                                formData.append('image', null);
                             }
                             formData.append('resTauRantName', values.resTauRantName);
                             formData.append('address', values.address);
