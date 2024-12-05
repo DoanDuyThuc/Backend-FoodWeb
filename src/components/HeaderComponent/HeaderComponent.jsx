@@ -12,6 +12,8 @@ export const HeaderComponent = () => {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const [numberphone, setNumberphone] = useState(user?.numberphone)
+
     const navigate = useNavigate();
 
     const [showCanvas, setShowCanvas] = useState(false);
@@ -32,7 +34,7 @@ export const HeaderComponent = () => {
                             <span className='me-3'>ứng dụng Foodey - Đặt đồ ăn bạn muốn </span>
                             <div className='d-flex align-items-center'>
                                 <FaPhoneAlt className='me-2' />
-                                <span>0123456789</span>
+                                <span>{numberphone}</span>
                             </div>
                         </Col>
                         <Col className='d-flex justify-content-end align-items-center' lg={6}>
