@@ -4,8 +4,11 @@ import { NavLink } from 'react-router-dom'
 import './CartFood.scss'
 import { CanvasOrder } from '../CanvasOrder/CanvasOrder'
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 
 export const CartFood = ({ data }) => {
+
+    const token = localStorage.getItem('token');
 
     const [showCanvas, setShowCanvas] = useState(false);
     const dispatch = useDispatch();
@@ -16,6 +19,11 @@ export const CartFood = ({ data }) => {
     }
 
     const handleOrder = () => {
+        if (!token) {
+            toast.error('Vui lòng đăng nhập để thực hiện chức năng này');
+            return;
+        }
+
         handleShowCanvas();
         dispatch({ type: 'restaurant/setFoodItem', payload: data });
     }

@@ -10,8 +10,11 @@ import { useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { GetRestaurantIdService } from '../../services/RestaurantService';
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 
 export const DetailsRestaurantPage = () => {
+
+    const token = localStorage.getItem('token');
 
     const { id } = useParams();
 
@@ -34,6 +37,10 @@ export const DetailsRestaurantPage = () => {
 
     const handleCloseCanvas = () => setShowCanvas(false);
     const handleShowCanvas = (food) => {
+        if (!token) {
+            toast.error('Vui lòng đăng nhập để thực hiện chức năng này');
+            return;
+        }
         setShowCanvas(true);
         dispatch({ type: 'restaurant/setFoodItem', payload: food });
     }
