@@ -11,6 +11,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { DeleteCartItemService, GetCartIdService, UpdateQualityCartItemService } from '../../services/CartService'
 import { toast } from 'react-toastify'
+import { FaRegTrashCan } from 'react-icons/fa6'
 
 export const HeaderComponent = () => {
 
@@ -150,6 +151,13 @@ export const HeaderComponent = () => {
             });
     }
 
+    const handleRemoveCartItem = async (item) => {
+        await mutationDeleteCartItem.mutateAsync(
+            {
+                cartItemId: item.cartItemId
+            });
+    }
+
     return (
         <>
             <div className='HeaderComponent'>
@@ -248,9 +256,13 @@ export const HeaderComponent = () => {
                                                 <Col lg={2}>
                                                     <Image style={{ objectFit: 'cover' }} width={48} height={48} src={item.url} />
                                                 </Col>
-                                                <Col className='d-flex align-items-center justify-content-between' lg={8}>
+                                                <Col className='d-flex align-items-center justify-content-between' lg={7}>
                                                     <div style={{ fontWeight: '500' }}>{item.foodName}</div>
                                                     <span>{item.foodPrice * item.quantity} vnđ</span>
+                                                </Col>
+
+                                                <Col className='d-flex align-items-center justify-content-between' lg={1}>
+                                                    <FaRegTrashCan onClick={() => handleRemoveCartItem(item)} style={{ cursor: 'pointer', color: 'red', fontSize: '1.2rem' }} />
                                                 </Col>
                                             </Row>
                                         </div>

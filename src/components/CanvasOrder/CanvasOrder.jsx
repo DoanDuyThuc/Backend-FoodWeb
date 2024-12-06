@@ -149,7 +149,7 @@ export const CanvasOrder = ({ showCanvas, handleCloseCanvas }) => {
                         <Row className='align-items-center'>
                             <Col lg={2}>
                                 <div className='CanvasOrder__HeaderCanvas__Image'>
-                                    <Image width={70} height={70} src={foodItem?.url} />
+                                    <Image style={{ objectFit: 'cover' }} width={70} height={70} src={foodItem?.url} />
                                 </div>
                             </Col>
                             <Col lg={7}>
