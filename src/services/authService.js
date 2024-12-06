@@ -64,3 +64,40 @@ export const GetOrderUserService = async ({ userId }) => {
         return error.response.data;
     }
 }
+
+export const ForgetPassService = async ({ email }) => {
+
+    try {
+        const response = await axiosInstance.post(`/auth/forgot-password`, { email },
+            // {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`
+            //     }
+            // },
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+
+export const ChangePassService = async ({ tokenChange, password }) => {
+
+    try {
+        const response = await axiosInstance.post(`/auth/reset-password?token=${tokenChange}`, { password },
+            // {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`
+            //     }
+            // },
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}

@@ -1,78 +1,38 @@
 import React from 'react'
 import backgroundAuth from '../../public/Images/backgroundauth.png'
 import logo from '../../public/Images/logo.jpeg'
-import './LoginPage.scss'
 import { Button, Col, Form, Image, InputGroup, Row } from 'react-bootstrap'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import * as formik from 'formik';
 import * as yup from 'yup';
 import { useMutation } from '@tanstack/react-query'
-import { LoginService } from '../../services/authService'
+import { ChangePassService, LoginService } from '../../services/authService'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
 
-export const LoginPage = () => {
+export const ResetPassPage = () => {
 
     const { Formik } = formik;
     const dispatch = useDispatch();
 
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get('token');
+
     const navigate = useNavigate();
 
     const schema = yup.object().shape({
-        email: yup.string().required("Email không được để trống"),
-        password: yup.string().required("Password không được để trống"),
+        password: yup.string().required("password không được để trống"),
     });
 
-    const mutationLogin = useMutation({
-        mutationFn: LoginService,
+    const mutationChangePassword = useMutation({
+        mutationFn: ChangePassService,
         onSuccess: (data) => {
-            if (data.statusCode === 500) {
-                toast.error(`🐉 Đăng nhập thất bại ${data?.message}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-
-            } else if (data.statusCode === 200) {
-                localStorage.setItem('token', data?.token);
-                localStorage.setItem('user', JSON.stringify({
-                    email: data?.email,
-                    name: data?.name,
-                    numberphone: data?.numberphone,
-                    role: data?.role,
-                    cartId: data?.cartId,
-                    id: data?.id,
-                }));
-
-                dispatch({
-                    type: 'auth/setUserInfo', payload:
-                    {
-                        role: data?.role,
-                        id: data?.id,
-                        cartId: data?.cartId
-                    }
-                });
-
-                navigate('/');
-                toast.success(`🐉 ${data?.message}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            }
+            toast.error(`🐉 cập nhập mật khẩu mới thành công !`)
+            navigate('/login');
         },
         onError: (error) => {
-            toast.error(`🐉 ${'đăng nhập thất bại: ' + error}`, {
+            toast.success(`🐉 ${'đăng nhập thất bại: ' + error}`, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -104,15 +64,15 @@ export const LoginPage = () => {
                                 validationSchema={schema}
                                 onSubmit={
                                     async (values) => {
-                                        await mutationLogin.mutateAsync({
-                                            email: values.email,
+                                        await mutationChangePassword.mutateAsync({
+                                            tokenChange: token,
                                             password: values.password,
                                         })
 
                                     }
+
                                 }
                                 initialValues={{
-                                    email: '',
                                     password: '',
                                 }}
                             >
@@ -121,26 +81,10 @@ export const LoginPage = () => {
                                         <Row className="mb-3">
                                             <Form.Group controlId="validationFormik01">
                                                 <Form.Control
-                                                    type="text"
-                                                    name="email"
-                                                    value={values.email}
-                                                    placeholder='Nhập email'
-                                                    onChange={handleChange}
-                                                    isInvalid={!!errors.email}
-                                                />
-                                                <Form.Control.Feedback type="invalid">
-                                                    {errors.email}
-                                                </Form.Control.Feedback>
-                                            </Form.Group>
-                                        </Row>
-
-                                        <Row className="mb-3">
-                                            <Form.Group controlId="validationFormik01">
-                                                <Form.Control
                                                     type="password"
                                                     name="password"
                                                     value={values.password}
-                                                    placeholder='Nhập password'
+                                                    placeholder='Nhập password mới'
                                                     onChange={handleChange}
                                                     isInvalid={!!errors.password}
                                                 />
@@ -149,14 +93,11 @@ export const LoginPage = () => {
                                                 </Form.Control.Feedback>
                                             </Form.Group>
                                         </Row>
+
                                         <Row className="mb-3 text-end">
                                             <Form.Group className='d-flex justify-content-between align-items-center' controlId="validationFormik01" >
-                                                <div className='d-flex gap-2'>
-                                                    <NavLink to={'/register'}>Đăng ký ngay</NavLink>
-                                                    <NavLink to={'/forgetpass'}>Quên mật khẩu</NavLink>
-                                                </div>
-
-                                                <Button type="submit">Đăng nhập</Button>
+                                                <NavLink to={'/login'}>Đăng nhập ngay</NavLink>
+                                                <Button type="submit">Xác nhận mật khẩu mới</Button>
                                             </Form.Group>
                                         </Row>
                                     </Form>

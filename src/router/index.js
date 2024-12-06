@@ -20,6 +20,8 @@ import { ManagerUser } from '../pages/AdminPage/ManagerUser'
 import { useSelector } from 'react-redux'
 import { AccountOrder } from '../pages/AccountPage/AccountOrder'
 import { ManagerOrder } from '../pages/AdminPage/ManagerOrder'
+import { ForgetPassWordPage } from '../pages/ForgetPassWordPage/ForgetPassWordPage'
+import { ResetPassPage } from '../pages/ResetPassPage/ResetPassPage'
 
 const Routers = () => {
 
@@ -33,6 +35,9 @@ const Routers = () => {
             {/* auth */}
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="forgetpass" element={<ForgetPassWordPage />} />
+
+            <Route path="/auth/reset-password" element={<ResetPassPage />} />
             {/* home page */}
             <Route path="/" element={<DefaultComponent />} >
                 <Route index element={<HomePage />} />

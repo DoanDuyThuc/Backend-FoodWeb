@@ -1,17 +1,17 @@
 import React from 'react'
 import backgroundAuth from '../../public/Images/backgroundauth.png'
 import logo from '../../public/Images/logo.jpeg'
-import './LoginPage.scss'
 import { Button, Col, Form, Image, InputGroup, Row } from 'react-bootstrap'
 import { NavLink, useNavigate } from 'react-router-dom'
 import * as formik from 'formik';
 import * as yup from 'yup';
 import { useMutation } from '@tanstack/react-query'
-import { LoginService } from '../../services/authService'
+import { ForgetPassService, LoginService } from '../../services/authService'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 
-export const LoginPage = () => {
+export const ForgetPassWordPage = () => {
 
     const { Formik } = formik;
     const dispatch = useDispatch();
@@ -20,59 +20,15 @@ export const LoginPage = () => {
 
     const schema = yup.object().shape({
         email: yup.string().required("Email không được để trống"),
-        password: yup.string().required("Password không được để trống"),
     });
 
-    const mutationLogin = useMutation({
-        mutationFn: LoginService,
+    const mutationForgetPass = useMutation({
+        mutationFn: ForgetPassService,
         onSuccess: (data) => {
-            if (data.statusCode === 500) {
-                toast.error(`🐉 Đăng nhập thất bại ${data?.message}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-
-            } else if (data.statusCode === 200) {
-                localStorage.setItem('token', data?.token);
-                localStorage.setItem('user', JSON.stringify({
-                    email: data?.email,
-                    name: data?.name,
-                    numberphone: data?.numberphone,
-                    role: data?.role,
-                    cartId: data?.cartId,
-                    id: data?.id,
-                }));
-
-                dispatch({
-                    type: 'auth/setUserInfo', payload:
-                    {
-                        role: data?.role,
-                        id: data?.id,
-                        cartId: data?.cartId
-                    }
-                });
-
-                navigate('/');
-                toast.success(`🐉 ${data?.message}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            }
+            toast.error(`🐉 chúng tôi đã gửi 1 email đến tài khoản của bạn !`)
         },
         onError: (error) => {
-            toast.error(`🐉 ${'đăng nhập thất bại: ' + error}`, {
+            toast.success(`🐉 ${'thất bại: ' + error}`, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -84,6 +40,8 @@ export const LoginPage = () => {
             });
         },
     });
+
+    if (mutationForgetPass.isPending) return <LoadingComponent message="Đang gửi đến bạn 1 email, vui lòng chờ..." />;
 
     return (
         <div className='AuthPage'>
@@ -104,16 +62,16 @@ export const LoginPage = () => {
                                 validationSchema={schema}
                                 onSubmit={
                                     async (values) => {
-                                        await mutationLogin.mutateAsync({
+
+                                        await mutationForgetPass.mutateAsync({
                                             email: values.email,
-                                            password: values.password,
                                         })
 
                                     }
+
                                 }
                                 initialValues={{
                                     email: '',
-                                    password: '',
                                 }}
                             >
                                 {({ handleSubmit, handleChange, values, touched, errors }) => (
@@ -124,7 +82,7 @@ export const LoginPage = () => {
                                                     type="text"
                                                     name="email"
                                                     value={values.email}
-                                                    placeholder='Nhập email'
+                                                    placeholder='Nhập email để lấy lại mật khẩu'
                                                     onChange={handleChange}
                                                     isInvalid={!!errors.email}
                                                 />
@@ -134,29 +92,10 @@ export const LoginPage = () => {
                                             </Form.Group>
                                         </Row>
 
-                                        <Row className="mb-3">
-                                            <Form.Group controlId="validationFormik01">
-                                                <Form.Control
-                                                    type="password"
-                                                    name="password"
-                                                    value={values.password}
-                                                    placeholder='Nhập password'
-                                                    onChange={handleChange}
-                                                    isInvalid={!!errors.password}
-                                                />
-                                                <Form.Control.Feedback type="invalid">
-                                                    {errors.password}
-                                                </Form.Control.Feedback>
-                                            </Form.Group>
-                                        </Row>
                                         <Row className="mb-3 text-end">
                                             <Form.Group className='d-flex justify-content-between align-items-center' controlId="validationFormik01" >
-                                                <div className='d-flex gap-2'>
-                                                    <NavLink to={'/register'}>Đăng ký ngay</NavLink>
-                                                    <NavLink to={'/forgetpass'}>Quên mật khẩu</NavLink>
-                                                </div>
-
-                                                <Button type="submit">Đăng nhập</Button>
+                                                <NavLink to={'/login'}>Đăng nhập ngay</NavLink>
+                                                <Button type="submit">Lấy lại mật khẩu</Button>
                                             </Form.Group>
                                         </Row>
                                     </Form>
